@@ -17,7 +17,17 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "dep:graph": "madge --image docs/dependency-graph.svg --extensions ts src",
+    "dep:image": "madge --image docs/dependency-graph.png --extensions ts src",
+    "dep:json": "madge --json --extensions ts src > docs/dependency-graph.json",
+    "dep:dot": "madge --dot --extensions ts src > docs/dependency-graph.dot",
+    "dep:circular": "madge --circular --extensions ts src",
+    "dep:orphans": "madge --orphans --extensions ts src",
+    "structure": "tree /F /A src > docs/project-structure.txt",
+    "structure:full": "tree /F /A . > docs/project-structure-full.txt",
+    "structure:show": "powershell -ExecutionPolicy Bypass -File scripts/show-structure.ps1 src",
+    "structure:src": "tree /F /A src"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -46,6 +56,7 @@
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
     "jest": "^30.0.0",
+    "madge": "^8.0.0",
     "prettier": "^3.4.2",
     "prisma": "^7.2.0",
     "source-map-support": "^0.5.21",

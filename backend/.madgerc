@@ -1,0 +1,14 @@
+{
+  "fileExtensions": ["ts"],
+  "excludeRegExp": [
+    "spec\\.ts$",
+    "\\.spec\\.ts$",
+    "node_modules",
+    "dist",
+    "coverage",
+    "\\.d\\.ts$",
+    "generated"
+  ],
+  "tsConfig": "./tsconfig.json"
+}
+

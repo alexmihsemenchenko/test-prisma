@@ -1,0 +1,63 @@
+Структура папок тома My Passport
+Серийный номер тома: 0000005E 8A5F:C988
+I:\MY_WORKS\TEST-PRISMA\BACKEND\SRC
+|   app.controller.spec.ts
+|   app.controller.ts
+|   app.module.ts
+|   app.service.ts
+|   main.ts
+|   
++---generated
+|   \---prisma
+|       |   browser.ts
+|       |   client.d.ts
+|       |   client.js
+|       |   client.ts
+|       |   commonInputTypes.ts
+|       |   default.d.ts
+|       |   default.js
+|       |   edge.d.ts
+|       |   edge.js
+|       |   enums.ts
+|       |   index-browser.js
+|       |   index.d.ts
+|       |   index.js
+|       |   models.ts
+|       |   package.json
+|       |   query_compiler_bg.js
+|       |   query_compiler_bg.wasm
+|       |   query_compiler_bg.wasm-base64.js
+|       |   schema.prisma
+|       |   wasm-edge-light-loader.mjs
+|       |   wasm-worker-loader.mjs
+|       |   
+|       +---internal
+|       |       class.ts
+|       |       prismaNamespace.ts
+|       |       prismaNamespaceBrowser.ts
+|       |       
+|       +---models
+|       |       AuditLog.ts
+|       |       InventoryItem.ts
+|       |       Product.ts
+|       |       User.ts
+|       |       
+|       \---runtime
+|               client.d.ts
+|               client.js
+|               index-browser.d.ts
+|               index-browser.js
+|               wasm-compiler-edge.js
+|               
++---prisma
+|       prisma.module.ts
+|       prisma.service.spec.ts
+|       prisma.service.ts
+|       
+\---user
+        user.controller.spec.ts
+        user.controller.ts
+        user.module.ts
+        user.service.spec.ts
+        user.service.ts
+        

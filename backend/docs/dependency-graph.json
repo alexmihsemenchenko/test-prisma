@@ -1,0 +1,26 @@
+{
+  "app.controller.ts": [
+    "app.service.ts"
+  ],
+  "app.module.ts": [
+    "app.controller.ts",
+    "app.service.ts",
+    "prisma/prisma.module.ts",
+    "user/user.module.ts",
+    "user/user.service.ts"
+  ],
+  "app.service.ts": [],
+  "main.ts": [
+    "app.module.ts"
+  ],
+  "prisma/prisma.module.ts": [
+    "prisma/prisma.service.ts"
+  ],
+  "prisma/prisma.service.ts": [],
+  "user/user.controller.ts": [],
+  "user/user.module.ts": [
+    "user/user.controller.ts",
+    "user/user.service.ts"
+  ],
+  "user/user.service.ts": []
+}
