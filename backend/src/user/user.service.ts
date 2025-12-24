@@ -17,7 +17,14 @@ export class UserService {
         email: dto.email,
         name: dto.name,
         password: passwordHash,
-        role: dto.role ?? 'USER',
+        role: dto.role ?? UserRole.USER,
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
       },
     });
   }
@@ -41,7 +48,15 @@ export class UserService {
   }
 
   async update(id: string, dto: UpdateUserDto) {
-    const data: { password?: string; role?: UserRole } = {};
+    const data: {
+      name?: string;
+      password?: string;
+      role?: UserRole;
+    } = {};
+
+    if (dto.name) {
+      data.name = dto.name;
+    }
 
     if (dto.password) {
       data.password = await bcrypt.hash(dto.password, 10);
@@ -54,6 +69,13 @@ export class UserService {
     return this.prisma.user.update({
       where: { id },
       data,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        createdAt: true,
+      },
     });
   }
 }
