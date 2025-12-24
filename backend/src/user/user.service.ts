@@ -15,6 +15,7 @@ export class UserService {
     return this.prisma.user.create({
       data: {
         email: dto.email,
+        name: dto.name,
         password: passwordHash,
         role: dto.role ?? 'USER',
       },
@@ -26,6 +27,7 @@ export class UserService {
       select: {
         id: true,
         email: true,
+        name: true,
         role: true,
         createdAt: true,
       },
