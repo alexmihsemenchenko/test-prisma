@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { PrismaClient, UserRole, AuditAction } from '../src/generated/prisma';
+import { PrismaClient, UserRole, AuditAction } from '@prisma/client';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 
@@ -13,6 +13,7 @@ async function main() {
     update: {},
     create: {
       email: 'admin@example.com',
+      name: 'Admin',
       password: 'admin123',
       role: UserRole.ADMIN,
     },
