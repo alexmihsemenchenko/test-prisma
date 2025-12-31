@@ -25,4 +25,20 @@ export class AppLogger {
   error(message: string, meta?: unknown) {
     this.logger.error(message, meta);
   }
+
+  log(message: string, meta?: unknown) {
+    this.logger.info(message, meta);
+  }
+
+  warn(message: string, meta?: unknown) {
+    this.logger.warn(message, meta);
+  }
+
+  debug(message: string, meta?: unknown) {
+    this.logger.debug(message, meta);
+  }
+
+  verbose(message: string, meta?: unknown) {
+    this.logger.verbose(message, meta);
+  }
 }
