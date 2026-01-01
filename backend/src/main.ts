@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { AppLogger } from './common/logger/logger.service';
 
 async function bootstrap() {
@@ -14,9 +15,11 @@ async function bootstrap() {
 
   // глобальные фильтры ошибок
   app.useGlobalFilters(
-    new PrismaExceptionFilter(logger),
     new HttpExceptionFilter(logger),
+    new PrismaExceptionFilter(logger),
   );
+
+  app.useGlobalInterceptors(new LoggingInterceptor(logger));
 
   // глобальная валидация DTO
   app.useGlobalPipes(

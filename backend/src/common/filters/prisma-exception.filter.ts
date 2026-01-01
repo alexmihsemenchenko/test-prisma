@@ -2,49 +2,51 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
+  HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import type { LoggerService } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { Request, Response } from 'express';
-import { AppLogger } from '../logger/logger.service';
+import { Request } from 'express';
 
 @Catch(Prisma.PrismaClientKnownRequestError)
 export class PrismaExceptionFilter implements ExceptionFilter {
-  constructor(private readonly logger: AppLogger) {}
+  constructor(private readonly logger: LoggerService) {}
 
   catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<Request>();
-    const response = ctx.getResponse<Response>();
 
-    let status = HttpStatus.BAD_REQUEST;
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Database error';
 
     switch (exception.code) {
       case 'P2002':
         status = HttpStatus.CONFLICT;
-        message = `Unique constraint failed on field(s): ${exception.meta?.target}`;
+        message = 'Resource already exists';
         break;
+
       case 'P2025':
         status = HttpStatus.NOT_FOUND;
-        message = 'Record not found';
+        message = 'Resource not found';
         break;
     }
 
-    this.logger.error('Prisma Exception', {
+    this.logger.error({
+      message: 'Prisma error',
       code: exception.code,
-      message: exception.message,
-      meta: exception.meta,
       path: request.url,
-      method: request.method,
-      stack: exception.stack,
+      meta: exception.meta,
     });
 
-    response.status(status).json({
-      statusCode: status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      message,
-    });
+    throw new HttpException(
+      {
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        message,
+      },
+      status,
+    );
   }
 }
