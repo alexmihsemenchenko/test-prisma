@@ -4,44 +4,58 @@ import {
   ExceptionFilter,
   HttpException,
 } from '@nestjs/common';
-import type { LoggerService } from '@nestjs/common';
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
+import { AppLogger } from '../logger/logger.service';
 
-@Catch(HttpException)
+@Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  constructor(private readonly logger: LoggerService) {}
+  constructor(private readonly logger: AppLogger) {}
 
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const status = exception.getStatus();
-    const exceptionResponse = exception.getResponse();
+    if (exception instanceof HttpException) {
+      const status = exception.getStatus();
+      const exceptionResponse = exception.getResponse() as {
+        message?: string | string[];
+      };
 
-    const responseBody =
-      typeof exceptionResponse === 'string'
-        ? { message: exceptionResponse }
-        : (exceptionResponse as {
-            message?: string | string[];
-            error?: string;
-          });
+      if (status >= 500) {
+        this.logger.error('HTTP Exception', {
+          status,
+          path: request.url,
+          exception: exceptionResponse,
+        });
+      } else {
+        this.logger.warn('HTTP Exception', {
+          status,
+          path: request.url,
+          exception: exceptionResponse,
+        });
+      }
 
-    this.logger.error({
-      message: 'HTTP Exception',
-      name: exception.name,
-      method: request.method,
+      response.status(status).json({
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        message: exceptionResponse?.message ?? 'Unexpected error',
+      });
+      return;
+    }
+
+    // Non-HTTP exceptions
+    this.logger.error('Unhandled Exception', {
+      exception: String(exception),
       path: request.url,
-      statusCode: status,
-      response: responseBody,
-      stack: exception.stack,
     });
 
-    response.status(status).json({
-      statusCode: status,
+    response.status(500).json({
+      statusCode: 500,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: responseBody.message ?? 'Unexpected error',
+      message: 'Internal server error',
     });
   }
 }

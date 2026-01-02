@@ -5,48 +5,48 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import type { LoggerService } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { Request } from 'express';
+import type { Request } from 'express';
+import { AppLogger } from '../logger/logger.service';
 
-@Catch(Prisma.PrismaClientKnownRequestError)
+@Catch()
 export class PrismaExceptionFilter implements ExceptionFilter {
-  constructor(private readonly logger: LoggerService) {}
+  constructor(private readonly logger: AppLogger) {}
 
-  catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<Request>();
 
-    let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message = 'Database error';
+    const ex = exception as { code?: unknown; meta?: { modelName?: unknown } };
 
-    switch (exception.code) {
-      case 'P2002':
-        status = HttpStatus.CONFLICT;
-        message = 'Resource already exists';
-        break;
+    // ЛОГИРУЕМ ОДИН РАЗ — если объект похож на Prisma ошибку
+    if (ex && typeof ex.code === 'string') {
+      this.logger.error('Prisma error', {
+        code: ex.code,
+        model: ex.meta?.modelName,
+        path: request.url,
+      });
 
-      case 'P2025':
-        status = HttpStatus.NOT_FOUND;
-        message = 'Resource not found';
-        break;
+      if (ex.code === 'P2002') {
+        throw new HttpException(
+          {
+            statusCode: HttpStatus.CONFLICT,
+            message: 'Resource already exists',
+            path: request.url,
+            timestamp: new Date().toISOString(),
+          },
+          HttpStatus.CONFLICT,
+        );
+      }
     }
-
-    this.logger.error({
-      message: 'Prisma error',
-      code: exception.code,
-      path: request.url,
-      meta: exception.meta,
-    });
 
     throw new HttpException(
       {
-        statusCode: status,
-        timestamp: new Date().toISOString(),
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Database error',
         path: request.url,
-        message,
+        timestamp: new Date().toISOString(),
       },
-      status,
+      HttpStatus.INTERNAL_SERVER_ERROR,
     );
   }
 }

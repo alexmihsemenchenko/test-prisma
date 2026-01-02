@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -11,6 +11,22 @@ export class UserService {
 
   async create(dto: CreateUserDto) {
     const passwordHash = await bcrypt.hash(dto.password, 10);
+
+    // Проверяем, есть ли пользователь с таким email, чтобы отловить уникальное ограничение заранее
+    const existing = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+    if (existing) {
+      throw new HttpException(
+        {
+          statusCode: HttpStatus.CONFLICT,
+          message: 'User with this email already exists',
+          path: '/users',
+          timestamp: new Date().toISOString(),
+        },
+        HttpStatus.CONFLICT,
+      );
+    }
 
     return this.prisma.user.create({
       data: {

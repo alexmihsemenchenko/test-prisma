@@ -10,18 +10,15 @@ import { AppLogger } from './common/logger/logger.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // получаем Winston-логгер из DI
   const logger = app.get(AppLogger);
 
-  // глобальные фильтры ошибок
   app.useGlobalFilters(
-    new HttpExceptionFilter(logger),
     new PrismaExceptionFilter(logger),
+    new HttpExceptionFilter(logger),
   );
 
   app.useGlobalInterceptors(new LoggingInterceptor(logger));
 
-  // глобальная валидация DTO
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -31,9 +28,9 @@ async function bootstrap() {
   );
 
   const port = Number(process.env.PORT) || 3001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
-  logger.log(`🚀 Application started on http://localhost:${port}`);
+  logger.log(`Application started on http://localhost:${port}`);
 }
 
 void bootstrap();

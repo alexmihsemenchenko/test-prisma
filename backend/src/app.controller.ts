@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('debug/error')
+  triggerError(): string {
+    throw new Error('Test server error');
+  }
 }
