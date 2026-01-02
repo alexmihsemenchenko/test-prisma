@@ -1,5 +1,5 @@
 Структура папок тома My Passport
-Серийный номер тома: 0000005E 8A5F:C988
+Серийный номер тома: 000000D4 8A5F:C988
 I:\MY_WORKS\TEST-PRISMA\BACKEND\SRC
 |   app.controller.spec.ts
 |   app.controller.ts
@@ -7,6 +7,20 @@ I:\MY_WORKS\TEST-PRISMA\BACKEND\SRC
 |   app.service.ts
 |   main.ts
 |   
++---common
+|   +---filters
+|   |       http-exception.filter.ts
+|   |       prisma-exception.filter.ts
+|   |       
+|   +---interceptors
+|   |       logging.interceptor.ts
+|   |       
+|   \---logger
+|           logger.module.ts
+|           logger.service.spec.ts
+|           logger.service.ts
+|           winston.config.ts
+|           
 +---generated
 |   \---prisma
 |       |   browser.ts
@@ -55,9 +69,13 @@ I:\MY_WORKS\TEST-PRISMA\BACKEND\SRC
 |       prisma.service.ts
 |       
 \---user
-        user.controller.spec.ts
-        user.controller.ts
-        user.module.ts
-        user.service.spec.ts
-        user.service.ts
-        
+    |   user.controller.spec.ts
+    |   user.controller.ts
+    |   user.module.ts
+    |   user.service.spec.ts
+    |   user.service.ts
+    |   
+    \---dto
+            create-user.dto.ts
+            update-user.dto.ts
+            

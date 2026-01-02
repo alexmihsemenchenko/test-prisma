@@ -8,9 +8,12 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { AppLogger } from './common/logger/logger.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
 
   const logger = app.get(AppLogger);
+  app.useLogger(logger);
 
   app.useGlobalFilters(
     new PrismaExceptionFilter(logger),
