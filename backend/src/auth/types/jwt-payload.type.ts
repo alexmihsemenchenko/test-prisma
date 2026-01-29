@@ -1,6 +1,6 @@
 import { UserRole } from '../../generated/prisma';
 
-export type JwtPayload = {
+export type AuthJwtPayload = {
   sub: string;
   role: UserRole;
 };
