@@ -1,11 +1,17 @@
 import { sign, Secret, SignOptions } from 'jsonwebtoken';
 import { AuthJwtPayload } from '../types/jwt-payload.type';
 
-const JWT_SECRET = process.env.JWT_SECRET as Secret;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1d';
+const accessSecret = process.env.JWT_ACCESS_SECRET as Secret;
+const refreshSecret = process.env.JWT_REFRESH_SECRET as Secret;
 
-export function signJwt(payload: AuthJwtPayload): string {
-  return sign(payload, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
+export function signAccessToken(payload: AuthJwtPayload): string {
+  return sign(payload, accessSecret, {
+    expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m',
+  } as SignOptions);
+}
+
+export function signRefreshToken(payload: AuthJwtPayload): string {
+  return sign(payload, refreshSecret, {
+    expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
   } as SignOptions);
 }

@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { LoginDto } from './dto/login.dto';
-import { signJwt } from './utils/jwt.utils';
+import { signAccessToken, signRefreshToken } from './utils/jwt.utils';
 
 @Injectable()
 export class AuthService {
@@ -23,13 +23,14 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const accessToken = signJwt({
+    const payload = {
       sub: user.id,
       role: user.role,
-    });
+    };
 
     return {
-      accessToken,
+      accessToken: signAccessToken(payload),
+      refreshToken: signRefreshToken(payload),
     };
   }
 }

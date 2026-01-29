@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
@@ -11,6 +12,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
+
+  app.use(cookieParser());
 
   const logger = app.get(AppLogger);
   app.useLogger(logger);
